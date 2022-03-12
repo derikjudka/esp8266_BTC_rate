@@ -73,7 +73,7 @@ def tcp_init():
     uart.write('AT+CIPSTART="TCP","api.coindesk.com",80\r\n')
     time.sleep(2)
     tcp_info = serial_read()
-    tcp_info = tcp_init.decode('utf-8')
+    tcp_info = tcp_info.decode('utf-8')
     return tcp_info
     
 #send_request returns -1 for bad request
