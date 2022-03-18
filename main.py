@@ -80,12 +80,7 @@ def get_esp_ip():
 def tcp_init():
     uart.write('AT+CIPSTART="TCP","api.coindesk.com",80\r\n')
     time.sleep(2)
-<<<<<<< HEAD
     tcp_info = serial_read().decode('utf-8')
-=======
-    tcp_info = serial_read()
-    tcp_info = tcp_info.decode('utf-8')
->>>>>>> dce73d155ea8ab701269c79d6eaf203dd0dd7fef
     return tcp_info
     
 #send_request returns -1 for bad request
@@ -122,7 +117,6 @@ def get_time(output):
     output = output[output.find('{"time'):output.find('}}}')+3:1]
     update_time = json.loads(output).get('time').get('updateduk')
     return update_time
-<<<<<<< HEAD
 
 def display(info):
     lcd_gpio.clear_display()
@@ -132,7 +126,3 @@ def display(info):
         lcd_gpio.write_LCD(val)
      
 main()
-=======
-    
-main()
->>>>>>> dce73d155ea8ab701269c79d6eaf203dd0dd7fef
