@@ -19,6 +19,8 @@ def main():
         check_wifi_connection()
         output = send_request()
         
+        clear_display()
+
         if output != -1:
             rate = get_rate(output)
             update_time = get_time(output)
@@ -118,9 +120,11 @@ def get_time(output):
     update_time = json.loads(output).get('time').get('updateduk')
     return update_time
 
-def display(info):
+def clear_display():
     lcd_gpio.clear_display()
     lcd_gpio.return_home()
+
+def display(info):
     for i in info:
         val = ord(i)
         lcd_gpio.write_LCD(val)
