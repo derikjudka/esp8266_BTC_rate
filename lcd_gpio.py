@@ -52,17 +52,17 @@ def configure_LCD():
 def second_row():
     RS.value(0)
     send_LCD(0b10101001)
-    utime.sleep(1)
+    utime.sleep_ms(2)
     
 def clear_display():
     RS.value(0)
     send_LCD(0b00000001)
-    utime.sleep(2)
+    utime.sleep_ms(2)
     
 def return_home():
     RS.value(0)
     send_LCD(0b00000010)
-    utime.sleep(2)
+    utime.sleep_ms(2)
              
 def write_LCD(binary):
     RS.value(1)

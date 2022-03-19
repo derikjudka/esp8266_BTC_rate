@@ -9,37 +9,39 @@ SSID = "" #enter wifi ssid here
 PASSWORD = "" #enter wifi password here
 
 def main():
-    lcd_gpio.configure_LCD()
-    setup_esp()
-    connect_wifi()
-    time.sleep(5)
-    tcp_init()
+    initial_config()
     
     while True:
         check_wifi_connection()
         output = send_request()
-        
+             
         clear_display()
-
         if output != -1:
             rate = get_rate(output)
             update_time = get_time(output)
         
             new_rate = "BTC: {} USD".format(str(int(rate)))
-            new_time = update_time[16:21:1]
+            new_time = "   {} GMT".format(update_time[16:21:1])
             
             display(new_rate)
             lcd_gpio.second_row()
             display(new_time)
+            time.sleep(30)
         else:
-            display('bad data')
+            display('bad data!!!')
             uart.write('AT+CIPCLOSE\r\n')
             time.sleep(2)
             close_conn = serial_read()
-            time.sleep(2)
+            time.sleep(10)
             tcp_init()
             
-        time.sleep(30)
+        
+def initial_config():
+    lcd_gpio.configure_LCD()
+    setup_esp()
+    connect_wifi()
+    time.sleep(5)
+    tcp_init()
 
 def serial_read():
     data = bytes()
@@ -70,7 +72,6 @@ def check_wifi_connection():
     time.sleep(5)
     wifi_status = serial_read().decode('utf-8')
     while wifi_status.find('No AP') != -1:
-        #NO WIFI...MUST RECONNECT
         connect_wifi()
         
 def get_esp_ip():
@@ -90,8 +91,6 @@ def send_request():
     if uart.any() > 0:
         uart.read()
     
-    time.sleep(3)
-        
     send = 'GET /v1/bpi/currentprice.json HTTP/1.1\r\n'
     send += 'Host: api.coindesk.com\r\n\r\n'
     msg_length = str(len(send))
@@ -102,9 +101,9 @@ def send_request():
             
     uart.write(send)
     buf = ''
-    for i in range(10):
-        buf += serial_read().decode('utf-8')
-        time.sleep(0.01)
+    buf = serial_read().decode('utf-8').strip()
+    while (buf.find('}}}') == -1):
+        buf += serial_read().decode('utf-8').strip()
     
     if (buf.find('{"time"') == -1 or buf.find('}}}') == -1):
         return -1
