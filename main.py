@@ -102,7 +102,8 @@ def send_request():
     uart.write(send)
     buf = ''
     buf = serial_read().decode('utf-8').strip()
-    while (buf.find('}}}') == -1):
+    timeout = time.time() + 60*2
+    while (buf.find('}}}') == -1 and time.time() < timeout):
         buf += serial_read().decode('utf-8').strip()
     
     if (buf.find('{"time"') == -1 or buf.find('}}}') == -1):
