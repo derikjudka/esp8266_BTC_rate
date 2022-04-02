@@ -18,14 +18,15 @@ def main():
         clear_display()
         if output != -1:
             rate = get_rate(output)
-            update_time = get_time(output)
-        
             new_rate = "BTC: {} USD".format(str(int(rate)))
-            new_time = "   {} GMT".format(update_time[16:21:1])
-            
             display(new_rate)
+
             lcd_gpio.second_row()
+            update_time = get_time(output)
+            time_loc = update_time.find(':')
+            new_time = "   {} GMT".format(update_time[time_loc-2:time_loc+3:1])
             display(new_time)
+
             time.sleep(30)
         else:
             display('bad data!!!')
